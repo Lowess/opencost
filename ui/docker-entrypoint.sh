@@ -18,7 +18,13 @@ else
     sed -i "s^PLACEHOLDER_FOOTER_CONTENT^OpenCost version: $VERSION ($HEAD)^g" /var/www/*.js
 fi
 
-envsubst '$API_PORT $API_SERVER $UI_PORT' < /etc/nginx/conf.d/default.nginx.conf.template > /etc/nginx/conf.d/default.nginx.conf
+
+# export your PROXY_TIMEOUTS=300 in your Dockerfile to set
+if [[ ! -z "$PROXY_TIMEOUTS" ]]; then
+    export PROXY_TIMEOUTS=180
+fi
+
+envsubst '$API_PORT $API_SERVER $UI_PORT $PROXY_TIMEOUTS' < /etc/nginx/conf.d/default.nginx.conf.template > /etc/nginx/conf.d/default.nginx.conf
 
 echo "Starting OpenCost UI version $VERSION ($HEAD)"
 
